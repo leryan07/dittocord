@@ -1,3 +1,4 @@
+import { Colors } from "@/constants/colors";
 import { ReactNode } from "react";
 import { StyleSheet, Text, TextStyle } from "react-native";
 
@@ -16,6 +17,6 @@ export default function BaseText({ children, style }: BaseTextProps) {
 
 const styles = StyleSheet.create({
     base: {
-        color: '#FFF',
+        color: Colors.white,
     },
 });
