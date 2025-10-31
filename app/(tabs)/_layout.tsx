@@ -1,25 +1,30 @@
 import { Tabs } from 'expo-router';
 
+import DittoAvatar from '@/components/DittoAvatar';
+import { Colors } from '@/constants/colors';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useTranslation } from 'react-i18next';
 
 export default function TabLayout() {
+    const { t } = useTranslation();
+
     return (
         <Tabs
             screenOptions={{
                 tabBarStyle: {
-                    backgroundColor: '#2D2D37'
+                    backgroundColor: Colors.backgroundVariant1
                 },
-                tabBarActiveTintColor: '#FFF',
+                tabBarActiveTintColor: Colors.white,
                 headerStyle: {
-                    backgroundColor: '#1C1D22',
+                    backgroundColor: Colors.backgroundDefault,
                 },
-                headerTintColor: '#FFF',
+                headerTintColor: Colors.white,
             }}
         >
             <Tabs.Screen
                 name="index"
                 options={{
-                    title: 'Home',
+                    title: t('home'),
                     tabBarIcon: ({ color }) => (
                         <Ionicons name='home-sharp' color={color} size={24} />
                     ),
@@ -28,19 +33,20 @@ export default function TabLayout() {
             <Tabs.Screen
                 name="notifications"
                 options={{
-                    title: 'Notifications',
+                    title: t('notifications'),
                     tabBarIcon: ({ color }) => (
                         <Ionicons name='notifications-sharp' color={color} size={24} />
                     ),
                 }}
             />
             <Tabs.Screen
-                name="you"
+                name="ditto"
                 options={{
-                    title: 'You',
-                    tabBarIcon: ({ color }) => (
-                        <Ionicons name='person-circle-sharp' color={color} size={24} />
+                    title: t('ditto'),
+                    tabBarIcon: () => (
+                        <DittoAvatar isTabBarIcon={true} />
                     ),
+                    headerShown: false,
                 }}
             />
         </Tabs>
