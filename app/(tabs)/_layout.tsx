@@ -28,6 +28,11 @@ export default function TabLayout() {
                     tabBarIcon: ({ color }) => (
                         <Ionicons name='home-sharp' color={color} size={24} />
                     ),
+                    headerTitle: '',
+                    headerStyle: {
+                        backgroundColor: Colors.backgroundVariant2,
+                    },
+                    headerStatusBarHeight: 0
                 }}
             />
             <Tabs.Screen

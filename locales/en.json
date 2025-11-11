@@ -1,9 +1,14 @@
 {
     "home": "Home",
     "notifications": "Notifications",
+    "messages": "Messages",
     "emptyPlaceholderTitle": "Nothing here yet",
     "emptyNotificationsMessage": "Come back for notifications on events, streams, and more.",
     "ditto": "Ditto",
     "about": "About",
+    "addFriends": "Add Friends",
+    "search": "Search",
+    "createYourServer": "Create Your Server",
+    "createMyOwn": "Create My Own",
     "aboutDitto": "A pokemon that can freely combine its own cellular structure to transform into other life forms."
 }
