@@ -1,4 +1,5 @@
 import { Colors } from '@/constants/colors';
+import { useServerManager } from '@/hooks/useServerManager';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
 import { Modal } from 'react-native';
@@ -9,15 +10,14 @@ import BaseText from './BaseText';
 type ServerModalProps = {
     showModal: boolean;
     setShowModal: (showModal: boolean) => void;
-    onCreateServer: () => void;
 };
 
 export default function ServerModal({
     showModal,
-    setShowModal,
-    onCreateServer
+    setShowModal
 }: ServerModalProps) {
     const { t } = useTranslation();
+    const { createServer } = useServerManager();
 
     return (
         <Modal
@@ -54,17 +54,15 @@ export default function ServerModal({
                         textColor={Colors.white}
                         labelStyle={{ fontWeight: 'bold', fontSize: 16 }}
                         contentStyle={{ justifyContent: 'flex-start' }}
-                        onPress={
-                            () => {
-                                onCreateServer();
-                                setShowModal(false)
-                            }
-                        }
+                        onPress={() => {
+                            createServer();
+                            setShowModal(false);
+                        }}
                         buttonColor={Colors.serverIconContainer}>
                         {t('createMyOwn')}
                     </Button>
                 </SafeAreaView>
             </SafeAreaProvider>
-        </Modal>
+        </Modal >
     );
 }

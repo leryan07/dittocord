@@ -4,29 +4,61 @@ import ServerIconButton from "@/components/ServerIconButton";
 import ServerOverview from "@/components/ServerOverview";
 import { Colors } from "@/constants/colors";
 import {
-  DittoServer,
-  useServerList
-} from '@/hooks/userServerList';
+  useServerManager
+} from '@/hooks/useServerManager';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useState } from "react";
+import { generateClient } from "aws-amplify/data";
+import { useEffect, useRef, useState } from "react";
 import { VirtualizedList } from "react-native";
 import { Divider } from "react-native-paper";
+import type { Schema } from "../../amplify/data/resource";
 import ServerModal from "../../components/ServerModal";
 
-const getItem = (data: DittoServer[], index: number) => data[index];
-const getItemCount = (data: DittoServer[]) => data.length;
+const client = generateClient<Schema>();
+
+const getItem = (data: Schema['Server']['type'][], index: number) => data[index];
+const getItemCount = (data: Schema['Server']['type'][]) => data.length;
 
 export default function Index() {
   const [showServerModal, setShowServerModal] = useState(false);
 
   const {
-    serverList,
+    servers,
+    setServers,
     selectedId,
     selectedServer,
     setSelectedId,
-    createServer,
-    deleteServer,
-  } = useServerList();
+  } = useServerManager();
+
+  const prevServerIdsRef = useRef<string[]>([]);
+
+  useEffect(() => {
+    const sub = client.models.Server.observeQuery().subscribe({
+      next: ({ items }) => {
+        const sortedItems = items.slice().sort(
+          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+        setServers(sortedItems);
+
+        const currentIds = sortedItems.map(item => item.id);
+        const prevIds = prevServerIdsRef.current;
+        const prevIdSet = new Set(prevIds);
+
+        const hasAdded = currentIds.filter(id => !prevIdSet.has(id)).length > 0;
+        const hasRemoval = prevIds.length > currentIds.length;
+
+        if (items.length === 0) {
+          setSelectedId('messages');
+        } else if (hasAdded || hasRemoval) {
+          setSelectedId(currentIds[0]);
+        }
+
+        prevServerIdsRef.current = currentIds;
+      },
+    });
+
+    return () => sub.unsubscribe();
+  }, []);
 
   return (
     <BaseView style={{
@@ -49,7 +81,7 @@ export default function Index() {
         />
         <Divider style={{ width: 32, alignSelf: 'center' }} />
         <VirtualizedList
-          data={serverList}
+          data={servers}
           renderItem={({ item }) =>
             <ServerIconButton
               id={item.id}
@@ -87,15 +119,13 @@ export default function Index() {
         {selectedId !== 'messages' &&
           <ServerOverview
             serverId={selectedServer?.id || ''}
-            serverName={selectedServer?.title || ''}
-            onDeleteServer={deleteServer} />
+            serverName={selectedServer?.name || ''} />
         }
       </BaseView>
 
       <ServerModal
         showModal={showServerModal}
-        setShowModal={(visible) => setShowServerModal(visible)}
-        onCreateServer={createServer} />
+        setShowModal={(visible) => setShowServerModal(visible)} />
     </BaseView>
   );
 }

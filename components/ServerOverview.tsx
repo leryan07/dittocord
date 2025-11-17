@@ -1,4 +1,5 @@
 import { Colors } from "@/constants/colors";
+import { useServerManager } from "@/hooks/useServerManager";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useTranslation } from "react-i18next";
 import { Button, IconButton } from "react-native-paper";
@@ -6,36 +7,32 @@ import BaseHomeContentView from "./BaseHomeContentView";
 
 type ServerOverviewProp = {
     serverId: string,
-    serverName: string,
-    onDeleteServer: (id: string) => void
+    serverName: string
 };
 
 type ServerHeaderActionsProp = {
-    serverId: string,
-    onDeleteServer: (id: string) => void
+    serverId: string
 };
 
 export default function ServerOverview({
     serverId,
-    serverName,
-    onDeleteServer
+    serverName
 }: ServerOverviewProp) {
     return (
         <BaseHomeContentView
             title={serverName}
             headerChildren={
                 <HeaderActions
-                    serverId={serverId}
-                    onDeleteServer={onDeleteServer} />}
+                    serverId={serverId} />}
         />
     );
 }
 
 const HeaderActions = ({
     serverId,
-    onDeleteServer
 }: ServerHeaderActionsProp) => {
     const { t } = useTranslation();
+    const { deleteServer } = useServerManager();
 
     return (
         <>
@@ -55,9 +52,7 @@ const HeaderActions = ({
                 iconColor={Colors.red}
                 containerColor={Colors.grayButtonVariant1}
                 onPress={
-                    () => {
-                        onDeleteServer(serverId);
-                    }
+                    () => deleteServer(serverId)
                 } />
         </>
     );
